@@ -17,6 +17,7 @@ var amountOfCameras = 0;
 var currentFacingMode = 'environment';
 var enableInference = false;
 
+
 // this function counts the amount of video inputs
 // it replaces DetectRTC that was previously implemented.
 function deviceCount() {
@@ -166,7 +167,7 @@ function initCameraUI() {
 
         context = canvas.getContext('2d');
         context.drawImage(video, 0, 0, width*0.4, height*0.4);
-        //  console.log('The currentTime attribute has been updated. Again.');
+        updatePredictions();  //check "inference_mnist_model.py", "start" determine which channel will be used
     };
 
     // -- switch camera part

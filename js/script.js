@@ -5,6 +5,10 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const clearButton = document.getElementById("clear-button");
 
+const canvasshot = document.getElementById("shot");
+const ctxshot = canvasshot.getContext("2d");
+video = document.getElementById('video');
+
 let isMouseDown = false;
 let hasIntroText = true;
 let lastX = 0;
@@ -46,23 +50,28 @@ function drawLine(fromX, fromY, toX, toY) {
 }
 
 async function updatePredictions() {
-  // Get the predictions for the canvas data.
-  const imgData = ctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-  const input = new onnx.Tensor(new Float32Array(imgData.data), "float32");
 
-  const outputMap = await sess.run([input]);
-  const outputTensor = outputMap.values().next().value;
-  const predictions = outputTensor.data;
-  const maxPrediction = Math.max(...predictions);
+    // Get the predictions for the canvas data.
+    const imgData = ctxshot.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+//    const imgData = ctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    const input = new onnx.Tensor(new Float32Array(imgData.data), "float32");
 
-  for (let i = 0; i < predictions.length; i++) {
-    const element = document.getElementById(`prediction-${i}`);
-    element.children[0].children[0].style.height = `${predictions[i] * 100}%`;
-    element.className =
-      predictions[i] === maxPrediction
-        ? "prediction-col top-prediction"
-        : "prediction-col";
-  }
+    const outputMap = await sess.run([input]);
+    const outputTensor = outputMap.values().next().value;
+    const predictions = outputTensor.data;
+    const maxPrediction = Math.max(...predictions);
+
+    for (let i = 0; i < predictions.length; i++) {
+        const element = document.getElementById(`prediction-${i}`);
+        element.children[0].children[0].style.height = `${predictions[i] * 100}%`;
+        element.className =
+            predictions[i] === maxPrediction
+            ? "prediction-col top-prediction"
+            : "prediction-col";
+    }
+
+//    console.log(new Float32Array(imgData.data));
+//    console.log(new Float32Array(imgData.data).slice(0, 10).length);
 }
 
 function canvasMouseDown(event) {
