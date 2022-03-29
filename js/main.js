@@ -230,17 +230,19 @@ function initCameraStream() {
 }
 
 function takeSnapshot() {
-  // if you'd like to show the canvas add it to the DOM
-  var canvas = document.createElement('canvas');
+// if you'd like to show the canvas add it to the DOM
 
-  var width = video.videoWidth;
-  var height = video.videoHeight;
-
-  canvas.width = width;
-  canvas.height = height;
-
-  context = canvas.getContext('2d');
-  context.drawImage(video, 0, 0, width, height);
+//  const canvas = document.getElementById("canvas");
+//
+//  var width = video.videoWidth;
+//  var height = video.videoHeight;
+//
+//  canvas.width = width;
+//  canvas.height = height;
+//
+//
+//  context = canvas.getContext('2d');
+//  context.drawImage(video, 0, 0, width*0.25, height*0.25);
 
   // polyfil if needed https://github.com/blueimp/JavaScript-Canvas-to-Blob
 
