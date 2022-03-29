@@ -77,10 +77,8 @@ button {
 }
 
 #takePhotoButton {
-  left: calc(50% - 40px);
-  top: calc(50% - 40px);
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
   background-image: url('img/ic_photo_camera_white_48px.svg');
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.5);
@@ -89,6 +87,19 @@ button {
 #takePhotoButton:active {
   background-color: #fff;
 }
+
+#toggleInferenceButton {
+  width: 64px;
+  height: 64px;
+  background-image: url('img/ic_fullscreen_white_48px.svg');
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#toggleInferenceButton[aria-pressed='true'] {
+  background-image: url('img/ic_fullscreen_exit_white_48px.svg');
+}
+
 
 #toggleFullScreenButton {
   display: none;
@@ -171,9 +182,19 @@ button {
     top: calc(18% - 32px);
   }
 
+  #takePhotoButton {
+    left: calc(25% - 32px);
+    top: calc(94% - 28px);
+  }
+
   #toggleFullScreenButton {
+    left: calc(75% - 32px);
+    top: calc(94% - 28px);
+  }
+
+  #toggleInferenceButton {
     left: calc(50% - 32px);
-    top: calc(82% - 32px);
+    top: calc(94% - 28px);
   }
 }
 
@@ -186,12 +207,12 @@ button {
 .card {
   background: #fff;
   border-radius: 4px;
-  padding: 16px;
+  padding: 10px;
 }
 
 .canvas {
   border-radius: 4px;
-  height: 140px;
+  height: 120px;
   width: 140px;
 }
 
@@ -205,7 +226,7 @@ button {
   font-weight: 500;
   letter-spacing: 1.25px;
   line-height: 36px;
-  margin: 16px 0;
+  margin: 10px 0;
   text-align: center;
   transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
@@ -257,4 +278,8 @@ button {
 .top-prediction .prediction-number {
   color: #00f0ff;
   font-weight: bold;
+}
+
+.votecount {
+ width:50px;
 }

@@ -11,9 +11,11 @@ var takeSnapshotUI = createClickFeedbackUI();
 var video;
 var takePhotoButton;
 var toggleFullScreenButton;
+var toggleInferenceButton;
 var switchCameraButton;
 var amountOfCameras = 0;
 var currentFacingMode = 'environment';
+var enableInference = false;
 
 // this function counts the amount of video inputs
 // it replaces DetectRTC that was previously implemented.
@@ -88,31 +90,31 @@ document.addEventListener('DOMContentLoaded', function (event) {
 });
 
 function initCameraUI() {
-  video = document.getElementById('video');
+    video = document.getElementById('video');
 
-  takePhotoButton = document.getElementById('takePhotoButton');
-  toggleFullScreenButton = document.getElementById('toggleFullScreenButton');
-  switchCameraButton = document.getElementById('switchCameraButton');
+    takePhotoButton = document.getElementById('takePhotoButton');
+    toggleFullScreenButton = document.getElementById('toggleFullScreenButton');
+    toggleInferenceButton = document.getElementById('toggleInferenceButton');
+    switchCameraButton = document.getElementById('switchCameraButton');
 
-  // https://developer.mozilla.org/nl/docs/Web/HTML/Element/button
-  // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_button_role
+    // https://developer.mozilla.org/nl/docs/Web/HTML/Element/button
+    // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_button_role
 
-  takePhotoButton.addEventListener('click', function () {
-    takeSnapshotUI();
-    takeSnapshot();
-  });
+    takePhotoButton.addEventListener('click', function () {
+        takeSnapshotUI();
+        takeSnapshot();
+    });
 
-  // -- fullscreen part
-
-  function fullScreenChange() {
+    // -- fullscreen part
+    function fullScreenChange() {
     if (screenfull.isFullscreen) {
-      toggleFullScreenButton.setAttribute('aria-pressed', true);
+        toggleFullScreenButton.setAttribute('aria-pressed', true);
     } else {
-      toggleFullScreenButton.setAttribute('aria-pressed', false);
+        toggleFullScreenButton.setAttribute('aria-pressed', false);
     }
-  }
+    }
 
-  if (screenfull.isEnabled) {
+    if (screenfull.isEnabled) {
     screenfull.on('change', fullScreenChange);
 
     toggleFullScreenButton.style.display = 'block';
@@ -121,28 +123,63 @@ function initCameraUI() {
     fullScreenChange();
 
     toggleFullScreenButton.addEventListener('click', function () {
-      screenfull.toggle(document.getElementById('container')).then(function () {
-        console.log(
-          'Fullscreen mode: ' +
-            (screenfull.isFullscreen ? 'enabled' : 'disabled'),
-        );
-      });
+        screenfull.toggle(document.getElementById('container')).then(function () {
+            console.log(
+                'Fullscreen mode: ' + (screenfull.isFullscreen ? 'enabled' : 'disabled'),
+            );
+        });
     });
-  } else {
-    console.log("iOS doesn't support fullscreen (yet)");
-  }
+    } else {
+        console.log("iOS doesn't support fullscreen (yet)");
+    }
 
-  // -- switch camera part
-  if (amountOfCameras > 1) {
-    switchCameraButton.style.display = 'block';
+    // -- Inference part
+    function count() {
+        var x = document.getElementById("counting").innerHTML;
+        if(x==""){
+            document.getElementById( "counting" ).innerHTML = 1;
+        }else{
+            document.getElementById( "counting" ).innerHTML = parseInt(x)+1;
+        }
+    }
 
-    switchCameraButton.addEventListener('click', function () {
-      if (currentFacingMode === 'environment') currentFacingMode = 'user';
-      else currentFacingMode = 'environment';
+    toggleInferenceButton.style.display = 'block';
 
-      initCameraStream();
+    toggleInferenceButton.addEventListener('click', function () {
+    if (enableInference == false) {
+        toggleInferenceButton.setAttribute('aria-pressed', true);
+    } else {
+        toggleInferenceButton.setAttribute('aria-pressed', false);
+    }
+    enableInference=~enableInference;
+    count();
     });
-  }
+
+    //  -- video part
+    const canvas = document.getElementById("shot");
+    video.ontimeupdate = (event) => {
+        var width = video.videoWidth;
+        var height = video.videoHeight;
+
+        canvas.width = width;
+        canvas.height = height;
+
+        context = canvas.getContext('2d');
+        context.drawImage(video, 0, 0, width*0.4, height*0.4);
+        //  console.log('The currentTime attribute has been updated. Again.');
+    };
+
+    // -- switch camera part
+    if (amountOfCameras > 1) {
+        switchCameraButton.style.display = 'block';
+
+        switchCameraButton.addEventListener('click', function () {
+        if (currentFacingMode === 'environment') currentFacingMode = 'user';
+        else currentFacingMode = 'environment';
+
+        initCameraStream();
+        });
+    }
 
   // Listen for orientation changes to make sure buttons stay at the side of the
   // physical (and virtual) buttons (opposite of camera) most of the layout change is done by CSS media queries
@@ -207,6 +244,7 @@ function initCameraStream() {
     .catch(handleError);
 
   function handleSuccess(stream) {
+
     window.stream = stream; // make stream available to browser console
     video.srcObject = stream;
 
@@ -232,17 +270,17 @@ function initCameraStream() {
 function takeSnapshot() {
 // if you'd like to show the canvas add it to the DOM
 
-//  const canvas = document.getElementById("canvas");
-//
-//  var width = video.videoWidth;
-//  var height = video.videoHeight;
-//
-//  canvas.width = width;
-//  canvas.height = height;
-//
-//
-//  context = canvas.getContext('2d');
-//  context.drawImage(video, 0, 0, width*0.25, height*0.25);
+  const canvas = document.getElementById("shot");
+
+  var width = video.videoWidth;
+  var height = video.videoHeight;
+
+  canvas.width = width;
+  canvas.height = height;
+
+
+  context = canvas.getContext('2d');
+  context.drawImage(video, 0, 0, width*0.25, height*0.25);
 
   // polyfil if needed https://github.com/blueimp/JavaScript-Canvas-to-Blob
 
