@@ -158,17 +158,29 @@ function initCameraUI() {
 
     //  -- video part
     const canvas = document.getElementById("shot");
-    video.ontimeupdate = (event) => {
+//    video.ontimeupdate = (event) => {
+//        var width = video.videoWidth;
+//        var height = video.videoHeight;
+//        canvas.width = width;
+//        canvas.height = height;
+//        context = canvas.getContext('2d');
+//        context.drawImage(video, 0, 0, width*0.4, height*0.4);
+//        updatePredictions();  //check "inference_mnist_model.py", "start" determine which channel will be used
+//        count();
+//    };
+
+    // https://stackoverflow.com/questions/12130475/get-raw-pixel-data-from-html5-video
+    var myVar = setInterval(intervalTimer, 30);
+    function intervalTimer() {
         var width = video.videoWidth;
         var height = video.videoHeight;
-
         canvas.width = width;
         canvas.height = height;
-
         context = canvas.getContext('2d');
         context.drawImage(video, 0, 0, width*0.4, height*0.4);
         updatePredictions();  //check "inference_mnist_model.py", "start" determine which channel will be used
-    };
+    }
+
 
     // -- switch camera part
     if (amountOfCameras > 1) {
